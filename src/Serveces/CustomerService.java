@@ -24,8 +24,9 @@ public class CustomerService {
     }
 
 
-    public void updateCreditCart(String nationalCode, double amount) throws SQLException {
-        customerDao.UpdateCustomerBalance(nationalCode, amount);
+    public int updateCreditCart(String nationalCode, double amount) throws SQLException {
+        int i = customerDao.UpdateCustomerBalance(nationalCode, amount);
+        return i;
     }
 
     public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {

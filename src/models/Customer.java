@@ -17,17 +17,19 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(int id, String natioanalCode, String name, String family, String phone, Date registerDate, double balance) {
+
+    public Customer(  String name, String family,String natioanalCode, String phone, Date registerDate) {
         this.id = id;
         this.natioanalCode = natioanalCode;
         this.name = name;
         this.family = family;
         this.phone = phone;
         this.registerDate = registerDate;
-        this.balance = balance;
+        setBalance(0.00);
     }
 
-    public Customer(String natioanalCode, String name, String family, String phone, Date registerDate, double balance) {
+    public Customer(int id, String natioanalCode, String name, String family, String phone, Date registerDate, double balance) {
+        this.id = id;
         this.natioanalCode = natioanalCode;
         this.name = name;
         this.family = family;

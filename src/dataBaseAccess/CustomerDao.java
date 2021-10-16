@@ -13,17 +13,20 @@ public class CustomerDao extends BaseDao {
 
 
     public int save(Customer customer) throws SQLException {
-        String query = "INSERT INTO `shop`.`customers` (`customerName`, `customerLastName`, `phone`,`registerdate`, `creditLimit`) VALUES (?, ?, ?, ?,?);";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, customer.getName());
-        statement.setString(2, customer.getFamily());
-        statement.setString(3, customer.getPhone());
-        statement.setDate(4, customer.getRegisterDate());
-        statement.setDouble(5, customer.getBalance());
-        int rowsInserted = statement.executeUpdate();
-        if (rowsInserted > 0) {
-            return rowsInserted;
+        if (connection != null) {
+            String query = "INSERT INTO customers (`customerName`, `customerLastName`, `nationalCode`,`phone`,`registerdate`, `creditLimit`) VALUES (?,?, ?, ?, ?,?);";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, customer.getName());
+            statement.setString(2, customer.getFamily());
+            statement.setString(3, customer.getNatioanalCode());
+            statement.setString(4, customer.getPhone());
+            statement.setDate(5, customer.getRegisterDate());
+            statement.setDouble(6, customer.getBalance());
+            statement.executeUpdate();
+
+
         }
+
         return 0;
     }
 
@@ -31,13 +34,13 @@ public class CustomerDao extends BaseDao {
     public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {
         if (connection != null) {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT customerName,customerLastName,creditLimit FROM customer where nationalCode='" + nationalCode + "';");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM customers where nationalCode='" + nationalCode + "';");
             while (resultSet.next()) {
                 Customer findCustomer = new Customer();
                 findCustomer.setName(resultSet.getString("customerName"));
                 findCustomer.setFamily(resultSet.getString("customerLastName"));
                 findCustomer.setBalance(resultSet.getDouble("creditLimit"));
-
+                findCustomer.setNatioanalCode(resultSet.getString("nationalCode"));
                 return findCustomer;
             }
         }
@@ -67,7 +70,7 @@ public class CustomerDao extends BaseDao {
 
     public int UpdateCustomerBalance(String nationalCode, double amount) throws SQLException {
         if (connection != null) {
-            String sql = "UPDATE customer SET creditLimit = creditLimit + ?  WHERE nationalCode = ?";
+            String sql = "UPDATE customers SET creditLimit = creditLimit + ?  WHERE nationalCode = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setDouble(1, amount);
             statement.setString(2, nationalCode);
