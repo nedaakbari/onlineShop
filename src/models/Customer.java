@@ -1,5 +1,7 @@
 package models;
 
+import models.product.Product;
+
 import java.sql.Date;
 import java.util.List;
 
