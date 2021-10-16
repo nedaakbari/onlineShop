@@ -1,4 +1,4 @@
-package enums;
+package ee;
 
 public enum ElectronicType {
     TV("tv"), RADIO("radio"), UnknownError("unknown");

@@ -1,4 +1,4 @@
-package enums;
+package ee;
 
 public enum ShoeType {
     sport("Sport"), FORMAL("Formal");

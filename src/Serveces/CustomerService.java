@@ -1,4 +1,4 @@
-package service;
+package Serveces;
 
 import dataBaseAccess.CustomerDao;
 import dataBaseAccess.ProductDao;
@@ -24,24 +24,20 @@ public class CustomerService {
     }
 
 
-
-    public void updateCreditCart(String nationalCode,double amount){
-        customerDao.UpdateCustomerBalance(nationalCode,amount);
+    public void updateCreditCart(String nationalCode, double amount) throws SQLException {
+        customerDao.UpdateCustomerBalance(nationalCode, amount);
     }
+
     public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {
         return customerDao.findCustomerByNationalCode(nationalCode);
     }
 
     public List<Customer> getAll() throws SQLException {
-        List<Customer> customers = customerDao.findAllCustomer();
-        for (Customer customer : customers) {
-            List<Product> products = productDao.findCustomerOrder();
-            customer.setBuyProductCapacity(products);
-        }
-
+        return customerDao.findAllCustomer();
     }
 
-
 }
+
+
 
 

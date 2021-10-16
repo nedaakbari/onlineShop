@@ -1,3 +1,4 @@
+/*
 package dataBaseAccess;
 
 import enums.ProductLine;
@@ -21,4 +22,4 @@ public class ProductLineDao extends BaseDao {
         }
         return 0;
     }
-}
+}*/
