@@ -1,4 +1,4 @@
-package models.enums;
+package enums;
 
 public enum ShoeType {
     sport("Sport"), FORMAL("Formal");
@@ -7,4 +7,5 @@ public enum ShoeType {
     ShoeType(String name) {
         this.name = name;
     }
+
 }
