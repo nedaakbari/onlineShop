@@ -1,4 +1,4 @@
-package dataBaseAccess;
+package DataAccess;
 
 import models.Customer;
 
@@ -7,14 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CustomerDao extends BaseDao {
+public class CustomerDao extends BaseDataAccess {
     public CustomerDao() {
     }
-
-
     public int save(Customer customer) throws SQLException {
         if (connection != null) {
-            String query = "INSERT INTO customers (`customerName`, `customerLastName`, `nationalCode`,`phone`,`registerdate`, `creditLimit`) VALUES (?,?, ?, ?, ?,?);";
+            String query = "INSERT INTO customers( `customerName`, `customerLastName`, `nationalCode`, `phone`, `registerdate`, `creditLimit`, `shoppingCount`) VALUES (?, ?, ?,?, ?, ?, ?);";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, customer.getName());
             statement.setString(2, customer.getFamily());
@@ -22,50 +20,29 @@ public class CustomerDao extends BaseDao {
             statement.setString(4, customer.getPhone());
             statement.setDate(5, customer.getRegisterDate());
             statement.setDouble(6, customer.getBalance());
+            statement.setInt(7, customer.getShoppingCount());
             statement.executeUpdate();
-
-
         }
-
         return 0;
     }
-
-
     public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {
         if (connection != null) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM customers where nationalCode='" + nationalCode + "';");
             while (resultSet.next()) {
+                //int id, String name, String family, double balance,String natioanalCode, int shoppingCount
                 Customer findCustomer = new Customer();
+                findCustomer.setId(resultSet.getInt("customerId"));
                 findCustomer.setName(resultSet.getString("customerName"));
                 findCustomer.setFamily(resultSet.getString("customerLastName"));
                 findCustomer.setBalance(resultSet.getDouble("creditLimit"));
                 findCustomer.setNatioanalCode(resultSet.getString("nationalCode"));
+                findCustomer.setShoppingCount(resultSet.getInt("shoppingCount"));
                 return findCustomer;
             }
         }
         return null;
     }
-
-
-/*    public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {
-        if (connection != null) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM customer where nationalCode='" + nationalCode + "';");
-            while (resultSet.next()) {
-                Customer findCustomer = new Customer();
-                findCustomer.setName(resultSet.getString("customerName"));
-                findCustomer.setFamily(resultSet.getString("customerLastName"));
-                findCustomer.setNatioanalCode(resultSet.getString("nationalcode"));
-                findCustomer.setPhone(resultSet.getString("phone"));
-                findCustomer.setRegisterDate(resultSet.getDate("registerdate"));
-                findCustomer.setBalance(resultSet.getDouble("creditLimit"));
-
-                return findCustomer;
-            }
-        }
-        return null;
-    }*/
 
 
     public int UpdateCustomerBalance(String nationalCode, double amount) throws SQLException {
@@ -86,16 +63,17 @@ public class CustomerDao extends BaseDao {
         if (connection != null) {
             List<Customer> customerList = new ArrayList<>();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(" SELECT * FROM shop.customers;");
+            ResultSet resultSet = statement.executeQuery(" SELECT * FROM customers;");
             while (resultSet.next()) {
                 int id = resultSet.getInt("customerId");
                 String customerName = resultSet.getString("customerName");
-                String nationalCode = resultSet.getString("nationalcode");
                 String customerLastName = resultSet.getString("customerLastName");
+                String nationalCode = resultSet.getString("nationalcode");
                 String phone = resultSet.getString("phone");
                 Date registerdate = resultSet.getDate("registerdate");
                 double creditLimit = resultSet.getDouble("creditLimit");
-                Customer customer = new Customer(id, customerName, customerLastName, nationalCode, phone, registerdate, creditLimit);
+                int shoppingCount = resultSet.getInt("shoppingCount");
+                Customer customer = new Customer(id, nationalCode,customerName, customerLastName,phone,registerdate,creditLimit,shoppingCount);
                 customerList.add(customer);
 
             }
