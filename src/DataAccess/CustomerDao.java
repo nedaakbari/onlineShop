@@ -10,6 +10,7 @@ import java.util.List;
 public class CustomerDao extends BaseDataAccess {
     public CustomerDao() {
     }
+
     public int save(Customer customer) throws SQLException {
         if (connection != null) {
             String query = "INSERT INTO customers( `customerName`, `customerLastName`, `nationalCode`, `phone`, `registerdate`, `creditLimit`, `shoppingCount`) VALUES (?, ?, ?,?, ?, ?, ?);";
@@ -25,19 +26,27 @@ public class CustomerDao extends BaseDataAccess {
         }
         return 0;
     }
+
+
     public Customer findCustomerByNationalCode(String nationalCode) throws SQLException {
         if (connection != null) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM customers where nationalCode='" + nationalCode + "';");
             while (resultSet.next()) {
                 //int id, String name, String family, double balance,String natioanalCode, int shoppingCount
-                Customer findCustomer = new Customer();
+                int id = resultSet.getInt("customerId");
+                String customerName = resultSet.getString("customerName");
+                String customerLastName = resultSet.getString("customerLastName");
+                double creditLimit = resultSet.getDouble("creditLimit");
+                int shoppingCount = resultSet.getInt("shoppingCount");
+                Customer findCustomer = new Customer(id, nationalCode, customerName, customerLastName, creditLimit, shoppingCount);
+                /*Customer findCustomer = new Customer();
                 findCustomer.setId(resultSet.getInt("customerId"));
                 findCustomer.setName(resultSet.getString("customerName"));
                 findCustomer.setFamily(resultSet.getString("customerLastName"));
                 findCustomer.setBalance(resultSet.getDouble("creditLimit"));
                 findCustomer.setNatioanalCode(resultSet.getString("nationalCode"));
-                findCustomer.setShoppingCount(resultSet.getInt("shoppingCount"));
+                findCustomer.setShoppingCount(resultSet.getInt("shoppingCount"));*/
                 return findCustomer;
             }
         }
@@ -51,6 +60,34 @@ public class CustomerDao extends BaseDataAccess {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setDouble(1, amount);
             statement.setString(2, nationalCode);
+            int i = statement.executeUpdate();
+            return i;
+        } else {
+            return 0;
+        }
+    }
+
+
+    public int getshoppingCountsOfCustomer(int customerId) throws SQLException {
+        if (connection != null) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT shoppingCount FROM customers where customerId='" + customerId + "';");
+            int shoppingCounts = 0;
+            while (resultSet.next()) {
+                //int id, String name, String family, double balance,String natioanalCode, int shoppingCount
+                shoppingCounts = resultSet.getInt("shoppingCount");
+            }
+            return shoppingCounts;
+        }
+        return 0;
+    }
+
+    public int UpdateCustomerBuyNumber(int customerId, int capacity) throws SQLException {
+        if (connection != null) {
+            String sql = "UPDATE customers SET shoppingCount = shoppingCount + ?  WHERE customerId = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, capacity);
+            statement.setInt(2, customerId);
             int i = statement.executeUpdate();
             return i;
         } else {
@@ -73,7 +110,7 @@ public class CustomerDao extends BaseDataAccess {
                 Date registerdate = resultSet.getDate("registerdate");
                 double creditLimit = resultSet.getDouble("creditLimit");
                 int shoppingCount = resultSet.getInt("shoppingCount");
-                Customer customer = new Customer(id, nationalCode,customerName, customerLastName,phone,registerdate,creditLimit,shoppingCount);
+                Customer customer = new Customer(id, nationalCode, customerName, customerLastName, phone, registerdate, creditLimit, shoppingCount);
                 customerList.add(customer);
 
             }

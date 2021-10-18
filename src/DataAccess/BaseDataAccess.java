@@ -1,14 +1,15 @@
-package dataBaseAccess;
+package DataAccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class BaseDao {
-    private static final String URL = "jdbc:mysql://localhost:3306/shop";
+public class BaseDataAccess {
+    private static final String URL = "jdbc:mysql://localhost:3306/onlineshop";
     private static final String USERNAME = "neda";
     private static final String PASSWORD = "13730203@Neda";
     protected Connection connection;
-    public BaseDao() {
+
+    public BaseDataAccess() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -16,7 +17,4 @@ public class BaseDao {
             System.out.println(e.getMessage());
         }
     }
-
-
 }
-

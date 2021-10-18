@@ -11,24 +11,35 @@ public class Customer {
     private String phone;
     private Date registerDate;
     private double balance;
-    private final int maximumOrder = 5;
-    private List<Product> BuyProductCapacity;
+    static final int maximumOrder = 5;
+    private int shoppingCount;
+    private Address address;
+    private List<Order> BuyOrderNumber;
 
     public Customer() {
     }
 
-
-    public Customer(  String name, String family,String natioanalCode, String phone, Date registerDate) {
-        this.id = id;
+    public Customer(String natioanalCode, String name, String family, String phone, Date registerDate) {
         this.natioanalCode = natioanalCode;
         this.name = name;
         this.family = family;
         this.phone = phone;
         this.registerDate = registerDate;
-        setBalance(0.00);
+        setShoppingCount(0);
+        setBalance(0.0);
     }
 
-    public Customer(int id, String natioanalCode, String name, String family, String phone, Date registerDate, double balance) {
+
+    public Customer(int id, String natioanalCode, String name, String family , double balance, int shoppingCount) {
+        this.id = id;
+        this.natioanalCode = natioanalCode;
+        this.name = name;
+        this.family = family;
+        this.balance = balance;
+        this.shoppingCount = shoppingCount;
+    }
+
+    public Customer(int id, String natioanalCode, String name, String family, String phone, Date registerDate, double balance, int shoppingCount) {
         this.id = id;
         this.natioanalCode = natioanalCode;
         this.name = name;
@@ -36,6 +47,16 @@ public class Customer {
         this.phone = phone;
         this.registerDate = registerDate;
         this.balance = balance;
+        this.shoppingCount = shoppingCount;
+    }
+
+    public Customer(int id, String name, String family, double balance, String natioanalCode, int shoppingCount) {
+        this.id = id;
+        this.natioanalCode = natioanalCode;
+        this.name = name;
+        this.family = family;
+        this.balance = balance;
+        this.shoppingCount = shoppingCount;
     }
 
     public int getId() {
@@ -52,10 +73,6 @@ public class Customer {
 
     public void setNatioanalCode(String natioanalCode) {
         this.natioanalCode = natioanalCode;
-    }
-
-    public int getMaximumOrder() {
-        return maximumOrder;
     }
 
     public String getName() {
@@ -98,23 +115,43 @@ public class Customer {
         this.balance = balance;
     }
 
-    public List<Product> getBuyProductCapacity() {
-        return BuyProductCapacity;
+    public int getShoppingCount() {
+        return shoppingCount;
     }
 
-    public void setBuyProductCapacity(List<Product> buyProductCapacity) {
-        BuyProductCapacity = buyProductCapacity;
+    public void setShoppingCount(int shoppingCount) {
+        this.shoppingCount = shoppingCount;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public List<Order> getBuyOrderNumber() {
+        return BuyOrderNumber;
+    }
+
+    public void setBuyOrderNumber(List<Order> buyOrderNumber) {
+        BuyOrderNumber = buyOrderNumber;
     }
 
     @Override
     public String toString() {
         return "Customer{" +
-                "natioanalCode='" + natioanalCode + '\'' +
+                "id=" + id +
+                ", natioanalCode='" + natioanalCode + '\'' +
                 ", name='" + name + '\'' +
                 ", family='" + family + '\'' +
                 ", phone='" + phone + '\'' +
                 ", registerDate=" + registerDate +
                 ", balance=" + balance +
+                ", shoppingCount=" + shoppingCount +
+                ", address=" + address +
+                ", BuyOrderNumber=" + BuyOrderNumber +
                 '}';
     }
 }

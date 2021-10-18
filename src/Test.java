@@ -1,6 +1,8 @@
 import DataAccess.AddressDao;
 import DataAccess.CustomerDao;
+import DataAccess.OrderDao;
 import DataAccess.ProductDao;
+import enums.OrderStatus;
 import models.Address;
 import models.Customer;
 import models.Order;
@@ -15,6 +17,7 @@ public class Test {
     static AddressDao addressDao = new AddressDao();
     static CustomerDao customerDao = new CustomerDao();
     static ProductDao productDao = new ProductDao();
+    static OrderDao orderDao = new OrderDao();
 
     public static void main(String[] args) throws SQLException {
         while (true) {
@@ -26,14 +29,20 @@ public class Test {
     public static void showMenue() throws SQLException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("********* Wellcome *********");
-            System.out.println("1.register\n2.login");
-            int choose = scanner.nextInt();
-            switch (choose) {
-                case 1:
+            System.out.println("********* Wellcome  *********");
+            System.out.println("1.sighnUp\n2.login");
+            String option = " ";
+            option = scanner.nextLine();
+            while (!(option.equals("1") || option.equals("2"))) {
+                System.out.println("Enter true Option : ");
+                option = scanner.nextLine();
+            }
+            // int choose = scanner.nextInt();
+            switch (option.trim()) {
+                case "1":
                     addCustomer();
                     break;
-                case 2:
+                case "2":
                     scanner = new Scanner(System.in);
                     System.out.println("Enter your nationalCode");
                     String enetrNationalToFind = scanner.next();
@@ -85,6 +94,40 @@ public class Test {
                             case 3:
                                 addingToShoppingCart(customerFound);
                                 break;
+                            case 4:
+                                System.out.println("you have this item in your credit shop basket");
+                                System.out.println(orderDao.findOrderOfCustomer(customerFound.getId()));
+                                System.out.println("************\nfor delete enter id of order\npress E to exit");
+                                String inn = scanner.next();
+                                while (!inn.equalsIgnoreCase("e")) {
+                                    int getId = Integer.parseInt(inn);
+                                    Order findorder = orderDao.findProductToincreaseBalance(getId);
+                                    int capacity = (findorder.getBuyNumberFromEach() + customerFound.getShoppingCount());
+                                    productDao.UpdateCapacity(findorder.getProducts().getId(), -capacity);
+                                    customerDao.UpdateCustomerBuyNumber(customerFound.getId(), -capacity);
+                                    productDao.UpdateCapacity(findorder.getProducts().getId(), -findorder.getBuyNumberFromEach());
+                                    orderDao.deletOrderById(getId);
+                                    System.out.println("delete success full");
+                                }
+                                break;
+                            case 5:
+                                Scanner scanner11=new Scanner(System.in);
+                                System.out.println("you have this item in your credit shop basket");
+                                double calculateCost = orderDao.calculateCost(customerFound.getId());
+                                System.out.println("cost All is: "+ calculateCost);
+                                System.out.println(orderDao.findOrderOfCustomer(customerFound.getId()));
+                                System.out.println("for confirm all press y\nfor exit press e");
+                                String input5 = scanner11.nextLine();
+                                if (input5.equalsIgnoreCase("y")) {
+
+                                    customerDao.UpdateCustomerBalance(customerFound.getNatioanalCode(), -calculateCost);
+                                    orderDao.removeAllOrderById(customerFound.getId());
+                                    System.out.println("have a nice day ");
+                                    break;
+                                } else {
+                                    break;
+                                }
+
                         }//switch
 
                     }//while case 2
@@ -139,22 +182,34 @@ public class Test {
         } else {
             System.out.println("you can buy " + (5 - shoppingCount) + " items");
             System.out.println("for adding to your credit cart insert id and number of each product:");
-            while (shoppingCount <= 5) {
-                String shop = scanner.nextLine();
-                String[] shopping = shop.split(",");
-                int productId = Integer.parseInt(shopping[0]);
-                int number = Integer.parseInt(shopping[1]);
-                if (productDao.findCapacity(productId) > number) {
-                    productDao.UpdateCapacity(productId, number);
-                    customerFound.setShoppingCount(customerFound.getShoppingCount() + number);
-                    Products productById = productDao.findProductById(productId);
-                    Order order = new Order(customerFound, productById, number, number * productById.getEachPrice());
-                    shoppingCount+=number;
-                } else {
-                    System.out.println("your number is more than capacity Of this product");
-                }
+            System.out.println("press e to exit");
+            int shoppingCountsOfCustomer = customerDao.getshoppingCountsOfCustomer(customerFound.getId());
+            String shop = " ";
+            while (shoppingCountsOfCustomer < 5) {
+                shop = scanner.nextLine();
+                if (!shop.equalsIgnoreCase("e")) {
+                    String[] shopping = shop.split(",");
+                    int productId = Integer.parseInt(shopping[0]);
+                    int number = Integer.parseInt(shopping[1]);
+                    if (productDao.findCapacity(productId) >= number) {
+                        productDao.UpdateCapacity(productId, number);
+                        customerFound.setShoppingCount(customerFound.getShoppingCount() + number);
+                        Products productById = productDao.findProductById(productId);
+                        Order order = new Order(customerFound, productById, number, number * productById.getEachPrice());
+                        orderDao.save(order);
+                        customerDao.UpdateCustomerBuyNumber(customerFound.getId(), number);
+                        shoppingCountsOfCustomer += number;
+                        // shoppingCount += number;
+                        System.out.println(customerFound);
+                    } else {
+                        System.out.println("your number is more than capacity Of this product");
+                    }
 
+                } else {
+                    break;
+                }
             }//while
+
         }//else
 
 

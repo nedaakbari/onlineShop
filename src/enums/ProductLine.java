@@ -1,6 +1,5 @@
 package enums;
 
-import ee.ProductType;
 
 public enum ProductLine {
     Electronic(1, "electronic"),

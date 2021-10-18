@@ -1,7 +1,7 @@
 package enums;
 
 public enum OrderStatus {
-    CANCELED("cancel"), ShIPPED("accept"),ONHOLD("OnHold") ,UNKNOWN("unknown");
+    CANCELLED("CANCELLED"), ShIPPED(" ShIPPED"), ONHOLD("ONHOLD");
     private String status;
 
     OrderStatus(String status) {
@@ -15,7 +15,20 @@ public enum OrderStatus {
                 return status;
             }
         }
-        return UNKNOWN;
+        return CANCELLED;
+    }
+
+    public static String value(OrderStatus orderStatus) {
+        switch (orderStatus) {
+            case CANCELLED:
+                return "CANCELLED";
+            case ShIPPED:
+                return "ShIPPED";
+            case ONHOLD:
+                return "ONHOLD";
+            default:
+                return "CANCELLED";
+        }
     }
 
 
